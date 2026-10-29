@@ -1,0 +1,32 @@
+# @template Server config template: `make up` / `make update` render it into .config.yaml,
+# @template filling SERVER_IP, SERVER_OTA_PORT and LITELLM_MASTER_KEY from .env. Edit this file, not .config.yaml.
+server:
+  websocket: ws://${SERVER_IP}:8000/xiaozhi/v1/
+  vision_explain: http://${SERVER_IP}:${SERVER_OTA_PORT}/mcp/vision/explain   # also the base of OTA firmware download links
+
+prompt: You're inventing riddles, and expecting that your audience figures them out. Be helpful, answer questions, add hints, but do not kill the game.
+
+selected_module:
+  LLM: Proxy
+
+LLM:
+  Proxy:
+    type: openai
+    base_url: http://litellm:4000/v1   # LiteLLM container; upstream is set in infra/litellm.yaml
+    model_name: claude-sonnet-4-6
+    api_key: ${LITELLM_MASTER_KEY}
+
+ASR:
+  FunASR:
+    type: fun_local
+    model_dir: models/SenseVoiceSmall
+    output_dir: tmp/
+    language: en
+
+TTS:
+  EdgeTTS:
+    type: edge
+    voice: en-GB-RyanNeural
+    rate: 10   # speech speed in %, -100..100 (also: pitch in Hz, volume); per device via CONFIG
+    language: English   # sets the reply language in the server's prompt template (default: Chinese)
+    output_dir: tmp/

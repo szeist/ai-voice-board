@@ -1,0 +1,19 @@
+services:
+  litellm:
+    image: ghcr.io/berriai/litellm:main-stable
+    command: ["--config", "/app/config.yaml", "--port", "4000"]
+    ports: ["4000:4000"]
+    volumes: ["./litellm.yaml:/app/config.yaml:ro"]
+    extra_hosts: ["host.docker.internal:host-gateway"]
+    environment:   # from .env (make passes it with --env-file)
+      LITELLM_MASTER_KEY: ${LITELLM_MASTER_KEY}
+      HAI_API_KEY: ${HAI_API_KEY}
+      LOCAL_AI_API_KEY: ${LOCAL_AI_API_KEY}
+
+  xiaozhi:
+    depends_on: [litellm]
+    image: ghcr.io/xinnan-tech/xiaozhi-esp32-server:server_latest
+    ports: ["8000:8000", "8003:8003"]
+    volumes:
+      - ./data:/opt/xiaozhi-esp32-server/data
+      - ./models/SenseVoiceSmall/model.pt:/opt/xiaozhi-esp32-server/models/SenseVoiceSmall/model.pt

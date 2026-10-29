@@ -1,0 +1,25 @@
+# Keys come from .env (passed in by docker compose)
+model_list:
+  - model_name: claude-sonnet-4-6
+    litellm_params:
+      model: anthropic/claude-sonnet-4-6
+      api_base: http://host.docker.internal:6655/anthropic   # hai proxy on the Mac (Anthropic API)
+      api_key: os.environ/HAI_API_KEY
+
+  - model_name: claude-haiku-4-5 
+    litellm_params:
+      model: anthropic/claude-haiku-4-5
+      api_base: http://host.docker.internal:6655/anthropic
+      api_key: os.environ/HAI_API_KEY
+
+  - model_name: dolphin
+    litellm_params:
+      model: dolphin3.0-llama3.1-8b
+      api_base: http://host.docker.internal:1234
+      api_key: os.environ/LOCAL_AI_API_KEY
+
+litellm_settings:
+  drop_params: true
+
+general_settings:
+  master_key: os.environ/LITELLM_MASTER_KEY   # clients (xiaozhi, make chat) use this
